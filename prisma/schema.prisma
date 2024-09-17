@@ -1,0 +1,187 @@
+// // This is your Prisma schema file,
+// // learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+// model Empresa {
+//   id                String  @id @default(uuid()) @db.Uuid
+//   nombre            String  @unique
+//   imagen            String?
+//   ruc               String  @unique
+//   direccion         String
+//   telefono          String
+//   correoElectronico String
+
+//   proyectos Proyecto[]
+
+//   @@map("empresas")
+// }
+
+// model Proyecto {
+//   id             String    @id @default(uuid()) @db.Uuid
+//   empresaId      String    @map("empresa_id") @db.Uuid
+//   nombreProyecto String    @unique
+//   descripcion    String
+//   fechaInicio    DateTime?
+//   fechaFin       DateTime?
+//   estado         String
+//   costoTotal     Decimal?
+//   fechaCreacion  DateTime  @map("fecha_creacion") @db.Date
+
+//   empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Restrict)
+
+//   @@map("proyectos")
+// }
+
+// model Cotizacion {
+//   id                 String   @id @default(uuid()) @db.Uuid
+//   proyectoId         String   @map("proyecto_id") @db.Uuid
+//   empleadoId         String   @map("empleado_id") @db.Uuid
+//   empresaId          String   @map("empresa_id") @db.Uuid
+//   numeroCotizacionId String   @map("numero_cotizacion_id") @db.Uuid
+//   fechaCreacion      DateTime @map("fecha_creacion") @db.Date
+//   total              Decimal
+//   createdAt          DateTime
+
+//   @@map("cotizaciones")
+// }
+
+// model Articulos {
+//   id          String   @id @default(uuid()) @db.Uuid
+//   proyectoId  String   @map("proyecto_id") @db.Uuid
+//   nombre      String
+//   descripcion String
+//   cantidad    Int
+//   precio      Decimal
+//   createdAt   DateTime
+
+//   @@map("articulos")
+// }
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Empresa {
+  id                String   @id @default(uuid()) @db.Uuid
+  nombre            String   @unique
+  ruc               String   @unique
+  direccion         String
+  telefono          String
+  correoElectronico String   @map("correo_electronico")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamp
+
+  proyectos    Proyecto[]
+  cotizaciones Cotizacion[]
+
+  @@map("empresas")
+}
+
+model Proyecto {
+  id          String    @id @default(uuid()) @db.Uuid
+  empresaId   String    @map("empresa_id") @db.Uuid
+  nombre      String
+  descripcion String
+  fechaInicio DateTime? @map("fecha_inicio")
+  fechaFin    DateTime? @map("fecha_fin")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp
+
+  empresa         Empresa          @relation(fields: [empresaId], references: [id], onDelete: Restrict)
+  cotizaciones    Cotizacion[]
+  ordenesServicio OrdenServicio[]
+  actasAceptacion ActaAceptacion[]
+
+  @@map("proyectos")
+}
+
+model Cotizacion {
+  id               String   @id @default(uuid()) @db.Uuid
+  empresaId        String   @map("empresa_id") @db.Uuid
+  proyectoId       String   @map("proyecto_id") @db.Uuid
+  numeroCotizacion String   @map("numero_cotizacion")
+  fechaCotizacion  DateTime @map("fecha_cotizacion") @db.Timestamp
+  total            Decimal
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamp
+
+  empresa         Empresa          @relation(fields: [empresaId], references: [id], onDelete: Restrict)
+  proyecto        Proyecto         @relation(fields: [proyectoId], references: [id], onDelete: Restrict)
+  articulos       Articulo[]
+  ordenesServicio OrdenServicio[]
+  actasAceptacion ActaAceptacion[]
+
+  @@map("cotizaciones")
+}
+
+model Articulo {
+  id             String   @id @default(uuid()) @db.Uuid
+  cotizacionId   String   @map("cotizacion_id") @db.Uuid
+  descripcion    String
+  cantidad       Int
+  precioUnitario Decimal  @map("precio_unitario")
+  total          Decimal
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamp
+
+  cotizacion Cotizacion @relation(fields: [cotizacionId], references: [id], onDelete: Restrict)
+
+  @@map("articulos")
+}
+
+model OrdenServicio {
+  id           String   @id @default(uuid()) @db.Uuid
+  proyectoId   String   @map("proyecto_id") @db.Uuid
+  cotizacionId String   @map("cotizacion_id") @db.Uuid
+  numeroOrden  String   @map("numero_orden")
+  fechaOrden   DateTime @map("fecha_orden") @db.Timestamp
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp
+
+  proyecto        Proyecto         @relation(fields: [proyectoId], references: [id], onDelete: Restrict)
+  cotizacion      Cotizacion       @relation(fields: [cotizacionId], references: [id], onDelete: Restrict)
+  actasAceptacion ActaAceptacion[]
+
+  @@map("ordenes_servicio")
+}
+
+model ActaAceptacion {
+  id              String    @id @default(uuid()) @db.Uuid
+  proyectoId      String    @map("proyecto_id") @db.Uuid
+  cotizacionId    String    @map("cotizacion_id") @db.Uuid
+  ordenServicioId String    @map("orden_servicio_id") @db.Uuid
+  fechaInicio     DateTime? @map("fecha_inicio") @db.Timestamp
+  fechaFin        DateTime? @map("fecha_fin") @db.Timestamp
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamp
+
+  proyecto      Proyecto      @relation(fields: [proyectoId], references: [id], onDelete: Restrict)
+  cotizacion    Cotizacion    @relation(fields: [cotizacionId], references: [id], onDelete: Restrict)
+  ordenServicio OrdenServicio @relation(fields: [ordenServicioId], references: [id], onDelete: Cascade)
+
+  @@map("actas_aceptacion")
+}
+
+model Usuario {
+  id       String      @id @default(uuid()) @db.Uuid
+  email    String      @unique
+  password String
+  rol      USUARIO_ROL @default(CLIENTE)
+
+  @@map("usuarios")
+}
+
+enum USUARIO_ROL {
+  ADMINISTRADOR
+  CLIENTE
+}
