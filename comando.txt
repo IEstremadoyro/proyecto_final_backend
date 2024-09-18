@@ -1,0 +1,107 @@
+Desarrollo web Fullstack - BackEnd (inicio 08.07)-20240905 0414-1.mp4
+Desarrollo web Fullstack - BackEnd (inicio 08.07)-20240906 0415-1.mp4
+creamos nuestra rama para poder trabajar
+git checkout -b v_ignacio
+git add -A
+git commit -m "Agregar configuración"Agregar configuración"
+git push -u origin v_ignacio
+
+verificamos la si tenemos node instalado
+nvs use latest
+para la creacion de nuestro poryecto
+npm init
+para instalar expressnom i express joi
+npm i express joi
+para instalar nodemon
+npm i --save-dev nodemon @types/express
+para instalar morgan
+npm i morgan
+npx i --save-dev prisma
+para que le de formato a prisma
+npx prisma format
+antes de hacer la migracion es necesario adicionar en el package.json debajo del main
+"type": "module",
+crea solo la migracion despues de haber creado la base de datos
+npx prisma migrate dev --create-only
+
+ejecuta las migraciones faltantes
+npx prisma migrate deploy
+npm i express-async-handler
+
+para ejecutar nuestro servidor
+npm run dev
+
+post
+http://127.0.0.1:3000/empresas
+{
+    "nombre": "Empresa Ejemplo",
+    "ruc": "12345678901",
+    "direccion": "Calle Falsa 123",
+    "telefono": "987654321",
+    "correo_electronico": "empresa@ejemplo.com"
+}
+get
+http://127.0.0.1:3000/empresas
+post
+http://localhost:3000/proyectos
+{
+    "nombre": "Proyecto X",
+    "descripcion": "Descripción del proyecto X",
+    "fecha_inicio": "2024-09-18T00:00:00Z",
+    "fecha_fin": "2024-12-31T00:00:00Z",
+    "empresaId": 1
+}
+get
+http://localhost:3000/proyectos
+post
+http://localhost:3000/articulos
+{
+    "nombre": "Artículo de prueba",
+    "descripcion": "Descripción del artículo de prueba",
+    "precio": 99.99
+}
+get
+http://localhost:3000/articulos
+post
+http://localhost:3000/cotizacion
+{
+  "numero_cotizacion": "COT12346",
+  "fecha_cotizacion": "2024-09-18T10:00:00.000Z",
+  "estado_cotizacion": "PENDIENTE",
+  "proyectoId": 1,
+  "detalle_cotizaciones": [
+    {
+      "item": 1,
+      "cantidad": 10,
+      "precio": 99.99,
+      "articuloId": 1
+    },
+    {
+      "item": 2,
+      "cantidad": 5,
+      "precio": 99.99,
+      "articuloId": 2
+    },
+    {
+      "item": 3,
+      "cantidad": 51,
+      "precio": 99.99,
+      "articuloId": 2
+    }
+  ]
+}
+get
+http://localhost:3000/cotizacion
+
+
+
+
+
+
+
+DATABASE_URL_2=postgresql://postgres:46711302@localhost:5432/cotizador
+PORT=3000
+
+
+
+
