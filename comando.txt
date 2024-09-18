@@ -5,6 +5,9 @@ git checkout -b v_ignacio
 git add -A
 git commit -m "Agregar configuración"Agregar configuración"
 git push -u origin v_ignacio
+para forzar los cambios
+git push -f origin v_ignacio
+
 
 verificamos la si tenemos node instalado
 nvs use latest

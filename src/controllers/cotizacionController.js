@@ -63,3 +63,10 @@ export const crearCotizacion = async (req, res) => {
   }
 }
 
+export const getCotizacion = async (req, res) => {
+  const cotizacionRes = await prisma.proyecto.findMany();
+  return res.json({
+      message: "Listado de cotizaciones",
+      content: cotizacionRes,
+  })
+};

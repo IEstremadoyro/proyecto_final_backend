@@ -3,7 +3,8 @@ import asyncHandler from "express-async-handler";
 import { crearEmpresa, getEmpresas, putEmpresa } from "../controllers/empresaController.js";
 import { crearProyecto, getProyectos } from "../controllers/proyectoController.js";
 import { crearArticulo, getArticuloPorNombre, getArticulos, putArticulo } from "../controllers/articuloController.js";
-import { crearCotizacion } from "../controllers/cotizacionController.js";
+import { crearCotizacion, getCotizacion } from "../controllers/cotizacionController.js";
+import { crearOservicio } from "../controllers/oservicioController.js";
 
 export const enrutador = Router();
 
@@ -28,8 +29,18 @@ enrutador.route("/articulos")
     .get(asyncHandler(getArticulos));
 enrutador.route("/articulo/:id")
     .put(asyncHandler(putArticulo));
-enrutador.route("/articulo").get(asyncHandler(getArticuloPorNombre)); 
+enrutador
+    .route("/articulo")
+    .get(asyncHandler(getArticuloPorNombre)); 
 
-enrutador.route("/cotizacion").post(asyncHandler(crearCotizacion));
+enrutador
+    .route("/cotizacion")
+    .post(asyncHandler(crearCotizacion))
+    .get(asyncHandler(getCotizacion));
+
+//API OSERVICIO
+enrutador
+    .route("/oservicios")
+    .post(asyncHandler(crearOservicio));
 
 
