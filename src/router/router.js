@@ -3,6 +3,7 @@ import asyncHandler from "express-async-handler";
 import { crearEmpresa, getEmpresas, putEmpresa } from "../controllers/empresaController.js";
 import { crearProyecto } from "../controllers/proyectoController.js";
 import { crearArticulo, getArticuloPorNombre, getArticulos, putArticulo } from "../controllers/articuloController.js";
+import { crearCotizacion } from "../controllers/cotizacionController.js";
 
 export const enrutador = Router();
 
@@ -26,5 +27,6 @@ enrutador.route("/articulo/:id")
     .put(asyncHandler(putArticulo));
 enrutador.route("/articulo").get(asyncHandler(getArticuloPorNombre)); 
 
+enrutador.route("/cotizacion").post(asyncHandler(crearCotizacion));
 
 
