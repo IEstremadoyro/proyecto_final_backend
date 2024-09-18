@@ -3,7 +3,8 @@ Desarrollo web Fullstack - BackEnd (inicio 08.07)-20240906 0415-1.mp4
 creamos nuestra rama para poder trabajar
 git checkout -b v_ignacio
 git add -A
-git commit -m "Agregar configuración"Agregar configuración"
+git add .
+git commit -m ""
 git push -u origin v_ignacio
 para forzar los cambios
 git push -f origin v_ignacio
@@ -33,6 +34,17 @@ npm i express-async-handler
 
 para ejecutar nuestro servidor
 npm run dev
+
+para el caso que se modifico el esquema
+npx prisma format
+para ejecutar las migraciones
+npx prisma migrate dev
+
+
+*************
+para el envio de correos
+npm install nodemailer
+
 
 post
 http://127.0.0.1:3000/empresas
@@ -95,8 +107,16 @@ http://localhost:3000/cotizacion
 }
 get
 http://localhost:3000/cotizacion
-
-
+post
+http://localhost:3000/oservicios
+{
+    "numero_orden": "ORD-001",
+    "fecha_orden": "2024-09-18",
+    "estaddo_orden": "PENDIENTE",
+    "cotizacion_id": 1
+}
+get
+http://localhost:3000/oservicios
 
 
 
@@ -104,6 +124,8 @@ http://localhost:3000/cotizacion
 
 DATABASE_URL_2=postgresql://postgres:46711302@localhost:5432/cotizador
 PORT=3000
+EMAIL_USER=tu_email@gmail.com
+EMAIL_PASS=tu_contraseña_o_token
 
 
 

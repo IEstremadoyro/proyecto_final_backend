@@ -4,7 +4,7 @@ import { crearEmpresa, getEmpresas, putEmpresa } from "../controllers/empresaCon
 import { crearProyecto, getProyectos } from "../controllers/proyectoController.js";
 import { crearArticulo, getArticuloPorNombre, getArticulos, putArticulo } from "../controllers/articuloController.js";
 import { crearCotizacion, getCotizacion } from "../controllers/cotizacionController.js";
-import { crearOservicio } from "../controllers/oservicioController.js";
+import { crearOservicio, getOservicio } from "../controllers/oservicioController.js";
 
 export const enrutador = Router();
 
@@ -41,6 +41,7 @@ enrutador
 //API OSERVICIO
 enrutador
     .route("/oservicios")
-    .post(asyncHandler(crearOservicio));
+    .post(asyncHandler(crearOservicio))
+    .get(asyncHandler(getOservicio));
 
 

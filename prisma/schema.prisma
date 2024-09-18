@@ -55,7 +55,7 @@ model Cotizacion {
 
   //RELACION CON TABLAS DE COTIZACIONES, PROYECTOS Y ORDENES DE SERVICIO
   detalle_cotizaciones DetalleCotizacion[] //Relacion de 1.* con la tabla detalle_cotizaciones
-  proyectoId           Int                 @map("proyecto_id")
+  proyectoId           Int                 @unique @map("proyecto_id")
   proyectos            Proyecto            @relation(fields: [proyectoId], references: [id])
   oservicios           OrdenServicio? //Relacion de 1.1 con la tabla de OrdenServicio
 
