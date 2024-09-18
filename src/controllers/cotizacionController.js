@@ -11,46 +11,55 @@ export const crearCotizacion = async (req, res) => {
         });
     }
 
-    //Buscamos el proyecto
-    const proyectoEncontrado = await prisma.proyecto.findUniqueOrThrow({
-        where: { id: value.proyectoId },
-        select: { id: true},
-    });
-    console.log(proyectoEncontrado);
-    //buscamos los articulos
-    const articuloEncontrado = await prisma.articulo.findMany({
-        //where: { id: { in: value.detalles.map((detalle) => detalle.idArticulo) } },
+    try{
+        //Buscamos el proyecto
+        const proyectoEncontrado = await prisma.proyecto.findUniqueOrThrow({
+            where: { id: value.proyectoId },
+            select: { id: true},
+        });
+        console.log(proyectoEncontrado);
         
-        where: { id: value.articuloId },
-        //select: { id: true, nombre: true, precio: true },
-        select : {id: true},
-      });
-      //console.log(articuloEncontrado)
+        //buscamos los articulos
+        const articuloEncontrado = await prisma.articulo.findMany({
+            where: {
+              id: {
+                in: value.detalle_cotizaciones.map((detalle) => detalle.articuloId),
+              },
+            },
+            select: { id: true },
+          });
+        //console.log(articuloEncontrado)
     
-    //Realizamos la cotizacion
-    const cotizacionCreada = await prisma.cotizacion.create({
+        //Realizamos la cotizacion
+        const cotizacionCreada = await prisma.cotizacion.create({
         data:{
             numero_cotizacion: value.numero_cotizacion,
             fecha_cotizacion:value.fecha_cotizacion,
             estado_cotizacion: value.estado_cotizacion,
             proyectoId: proyectoEncontrado.id,
-
-            detalle_cotizaciones: {
-                createMany: value.detalle_cotizaciones.map((detalle) => ({
-                    item: detalle.item,
-                    cantidad: detalle.cantidad,
-                    precio: detalle.precio,
-                    articuloId: detalle.articuloEncontrado.id,
-                  })),
-                },
             },
-            include: {
-                detalle_cotizaciones: true,
-            },        
+        });
+
+        const detallesCotizacion = await prisma.detalleCotizacion.createMany({
+            data: value.detalle_cotizaciones.map((detalle) => ({
+              item: detalle.item,
+              cantidad: detalle.cantidad,
+              precio_unitario: detalle.precio, // Asegúrate de que el nombre del campo sea correcto
+              articuloId: detalle.articuloId,
+              cotizacionId: cotizacionCreada.id,
+            })),
+        });
+        res.status(201).json({
+            message: "La cotización fue creada exitosamente",
+            //content: cotizacionCreada,
+            content: detallesCotizacion
+        });
+    }catch (error) {
+        console.error(error);
+        res.status(500).json({ 
+            message: "Error al crear la cotización", 
+            error: error.message 
     });
-    res.status(201).json({
-        message: "La cotización fue creada exitosamente",
-        content: cotizacionCreada,
-    })
-};
+  }
+}
 

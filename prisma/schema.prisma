@@ -63,7 +63,7 @@ model Cotizacion {
 }
 
 model DetalleCotizacion {
-  id              Int   @id
+  id              Int   @id @default(autoincrement())
   item            Int   @db.Integer
   cotizacionId    Int   @map("cotizacion_id")
   cantidad        Int
