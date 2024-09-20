@@ -21,7 +21,7 @@ model Empresa {
   telefono           String   @db.Text
   correo_electronico String   @unique @db.Text
   habilitado         Boolean  @default(true)
-  createdAt          DateTime @default(now()) 
+  createdAt          DateTime @default(now())
 
   //RELACIONES CON LA TABLA DE PROYECTOS
   proyectos Proyecto[] //Relacion de 1.* con la tabla proyecto
@@ -40,6 +40,10 @@ model Proyecto {
   //RELACION CON LAS TABLAS DE EMPRESAS Y COTIZACIONES
   empresaId    Int          @map("empresa_id")
   empresas     Empresa      @relation(fields: [empresaId], references: [id])
+  usuarioId Int @map("usuario_id")
+  usuarios     Usuario     @relation(fields: [usuarioId], references: [id])
+
+  //RELACION CON LAS TABLAS DE PROYECTOS Y COTIZACIONES
   cotizaciones Cotizacion[]
 
   @@map("proyectos")
@@ -51,12 +55,14 @@ model Cotizacion {
   fecha_cotizacion  DateTime @db.Date
   estado_cotizacion ESTADO   @default(PENDIENTE)
   createdAt         DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt         DateTime @updatedAt
 
   //RELACION CON TABLAS DE COTIZACIONES, PROYECTOS Y ORDENES DE SERVICIO
   detalle_cotizaciones DetalleCotizacion[] //Relacion de 1.* con la tabla detalle_cotizaciones
   proyectoId           Int                 @map("proyecto_id")
   proyectos            Proyecto            @relation(fields: [proyectoId], references: [id])
+  usuarioId Int @map("usuario_id")
+  usuarios     Usuario     @relation(fields: [usuarioId], references: [id])
   oservicios           OrdenServicio? //Relacion de 1.1 con la tabla de OrdenServicio
 
   @@map("cotizaciones")
@@ -83,7 +89,7 @@ model Articulo {
   nombre      String   @db.Text
   descripcion String   @db.Text
   precio      Float
-  createdAt   DateTime @default(now()) 
+  createdAt   DateTime @default(now())
 
   detalle_cotizaciones DetalleCotizacion[]
   detalle_ordenes      DetalleOrden[]
@@ -92,17 +98,18 @@ model Articulo {
 }
 
 model OrdenServicio {
-  id            Int      @id @default(autoincrement())
-  numero_orden  String   @unique @db.Text
-  fecha_orden   DateTime @db.Date
-  estaddo_orden ESTADO
-  createdAt     DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  numero_orden String   @unique @db.Text
+  fecha_orden  DateTime @db.Date
+  estado_orden ESTADO
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   //RELACION CON LA TABLA DE COTIZACION
   cotizacionId Int        @unique @map("cotizacion_id") //Relacion de 1.1
   cotizaciones Cotizacion @relation(fields: [cotizacionId], references: [id])
-
+  usuarioId Int @map("usuario_id")
+  usuarios     Usuario     @relation(fields: [usuarioId], references: [id])
   detalle_ordenes DetalleOrden[] //Relacion de 1.* con la tabla DetalleOrden
 
   @@map("oservicios")
@@ -121,6 +128,22 @@ model DetalleOrden {
   oservicios OrdenServicio @relation(fields: [ordenServicioId], references: [id])
 
   @@map("detalle_ordenes")
+}
+
+model Usuario {
+  id         Int     @id @default(autoincrement())
+  nombres    String  @db.Text
+  apellidos  String  @db.Text
+  email      String  @unique @db.Text
+  password   String  @db.Text
+  habilitado Boolean @default(true)
+
+  //RELACION CON TABLAS DE ORDEN DE SERVICIO, COTIZACIONES Y PROYECTOS
+  oservicios OrdenServicio[]
+  cotizaciones Cotizacion[]
+  proyectos Proyecto[]  
+
+  @@map("usuarios")
 }
 
 enum ESTADO {

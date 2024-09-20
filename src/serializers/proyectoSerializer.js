@@ -6,4 +6,5 @@ export const ProyectoSerializer = Joi.object({
     fecha_inicio: Joi.date().iso().required(),
     fecha_fin: Joi.date().optional(),
     empresaId: Joi.number().required(),
+    usuarioId: Joi.number().required(),
 });

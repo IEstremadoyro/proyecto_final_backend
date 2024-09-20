@@ -63,3 +63,18 @@ export const crearCotizacion = async (req, res) => {
   }
 }
 
+export const getCotizacionPorNumero = async (req, res) => {
+    const { numero_cotizacion } = req.query
+
+    try {
+        const cotizacion = prisma.cotizacion.findUniqueOrThrow({
+            where: {
+                contains: numero_cotizacion,                
+            }
+        })
+        res.json(cotizacion)
+    }catch (err) {
+        console.error(err)
+        return;
+    }
+};
