@@ -4,7 +4,7 @@ import { crearUsuario, getUsuarios, putUsuario } from "../controllers/usuarioCon
 import { crearEmpresa, getEmpresas, putEmpresa } from "../controllers/empresaController.js";
 import { crearProyecto, getProyectoPorRucEmpresa, getProyectoPorUsuario } from "../controllers/proyectoController.js";
 import { crearArticulo, getArticuloPorNombre, getArticulos, putArticulo } from "../controllers/articuloController.js";
-import { crearCotizacion, getCotizacionPorNumero } from "../controllers/cotizacionController.js";
+import { crearCotizacion, getCotizacionPorNumero, getCotizacionPorUsuario } from "../controllers/cotizacionController.js";
 
 export const enrutador = Router();
 
@@ -41,7 +41,7 @@ enrutador.route("/articulo").get(asyncHandler(getArticuloPorNombre));
 //API DE COTIZACIONES
 enrutador.route("/cotizacion").post(asyncHandler(crearCotizacion))
 enrutador.route("/cotizacion-num/:numero").get(asyncHandler(getCotizacionPorNumero)); 
-
+enrutador.route("/cotizaciones-user").get(asyncHandler(getCotizacionPorUsuario)); 
 //API DE ORDENES DE SERVICIO
 //enrutador.route("/
 
