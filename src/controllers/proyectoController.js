@@ -51,7 +51,7 @@ export const getProyectoPorRucEmpresa = async (req, res) => {
                 proyectos: true,
             }            
         });
-        console.log(empresaEncontrada);
+        //console.log(empresaEncontrada);
         res.status(200).json({
             message:"Los proyectos asociados al ruc de empresa son:",    
             content: empresaEncontrada.proyectos,
@@ -60,6 +60,37 @@ export const getProyectoPorRucEmpresa = async (req, res) => {
         return res.status(404).json({
             message: "No se encontró proyecto asociado al ruc de la empresa",
             content: error,
+        });
+    }
+};
+
+export const getProyectoPorUsuario = async (req, res) => {
+    const { nombreUsuario } = req.query;
+    console.log(nombreUsuario);
+    //Buscamos el usuario registrado
+    try {
+        const usuarioConProyectos = await prisma.usuario.findFirst({
+            where: { 
+                nombres: {
+                    equals: nombreUsuario,
+                    mode: 'insensitive'
+                }
+            },
+            include: {
+                proyectos: true,
+            },
+        });
+        console.log(usuarioConProyectos);
+        
+        res.status(200).json({
+            message: "Los proyectos asociados al usuario son:",
+            content: usuarioConProyectos
+        });
+        
+    }catch(error) {
+        return res.status(404).json({
+            message: "No se encontró proyecto asociado al usuario",
+            content: error.details,
         });
     }
 };

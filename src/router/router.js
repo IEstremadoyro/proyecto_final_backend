@@ -2,7 +2,7 @@ import { Router } from "express";
 import asyncHandler from "express-async-handler";
 import { crearUsuario, getUsuarios, putUsuario } from "../controllers/usuarioController.js";
 import { crearEmpresa, getEmpresas, putEmpresa } from "../controllers/empresaController.js";
-import { crearProyecto, getProyectoPorRucEmpresa } from "../controllers/proyectoController.js";
+import { crearProyecto, getProyectoPorRucEmpresa, getProyectoPorUsuario } from "../controllers/proyectoController.js";
 import { crearArticulo, getArticuloPorNombre, getArticulos, putArticulo } from "../controllers/articuloController.js";
 import { crearCotizacion, getCotizacionPorNumero } from "../controllers/cotizacionController.js";
 
@@ -28,6 +28,7 @@ enrutador
 enrutador.route("/proyectos")
     .post(asyncHandler(crearProyecto))
     .get(asyncHandler(getProyectoPorRucEmpresa));
+    enrutador.route("/proyectos-user").get(asyncHandler(getProyectoPorUsuario));
 
 //API DE ARTICULOS
 enrutador.route("/articulos")
