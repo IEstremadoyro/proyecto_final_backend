@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,8 +17,8 @@ model Empresa {
   habilitado         Boolean  @default(true)
   createdAt          DateTime @default(now())
 
-  //RELACIONES CON LA TABLA DE PROYECTOS
-  proyectos Proyecto[] //Relacion de 1.* con la tabla proyecto
+  proyectos        Proyecto[] 
+  actas_aceptacion ActaAceptacion[]
 
   @@map("empresas")
 }
@@ -37,10 +31,10 @@ model Proyecto {
   fecha_fin    DateTime? @db.Date
   createdAt    DateTime  @default(now())
 
-  //RELACION CON LAS TABLAS DE EMPRESAS Y COTIZACIONES
-  empresaId    Int          @map("empresa_id")
-  empresas     Empresa      @relation(fields: [empresaId], references: [id])
-  cotizaciones Cotizacion[]
+  empresaId        Int              @map("empresa_id")
+  empresas         Empresa          @relation(fields: [empresaId], references: [id])
+  cotizaciones     Cotizacion[]
+  actas_aceptacion ActaAceptacion[]
 
   @@map("proyectos")
 }
@@ -53,11 +47,10 @@ model Cotizacion {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  //RELACION CON TABLAS DE COTIZACIONES, PROYECTOS Y ORDENES DE SERVICIO
-  detalle_cotizaciones DetalleCotizacion[] //Relacion de 1.* con la tabla detalle_cotizaciones
-  proyectoId           Int                 @unique @map("proyecto_id")
+  detalle_cotizaciones DetalleCotizacion[] 
+  proyectoId           Int                 @map("proyecto_id")
   proyectos            Proyecto            @relation(fields: [proyectoId], references: [id])
-  oservicios           OrdenServicio? //Relacion de 1.1 con la tabla de OrdenServicio
+  oservicios           OrdenServicio[] 
 
   @@map("cotizaciones")
 }
@@ -69,7 +62,6 @@ model DetalleCotizacion {
   cantidad        Int
   precio_unitario Float
 
-  //RELACION CON TABLAS DE COTIZACION Y ARTICULOS
   cotizaciones Cotizacion @relation(fields: [cotizacionId], references: [id])
 
   articuloId Int      @map("articulo_id")
@@ -99,11 +91,11 @@ model OrdenServicio {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  //RELACION CON LA TABLA DE COTIZACION
-  cotizacionId Int        @unique @map("cotizacion_id") //Relacion de 1.1
-  cotizaciones Cotizacion @relation(fields: [cotizacionId], references: [id])
+  numero_cotizacion String     @map("numero_cotizacion")
+  cotizaciones      Cotizacion @relation(fields: [numero_cotizacion], references: [numero_cotizacion])
 
-  detalle_ordenes DetalleOrden[] //Relacion de 1.* con la tabla DetalleOrden
+  detalle_ordenes  DetalleOrden[] 
+  actas_aceptacion ActaAceptacion[]
 
   @@map("oservicios")
 }
@@ -115,7 +107,6 @@ model DetalleOrden {
   precio_unitario Float
   ordenServicioId Int   @map("oservicio_id")
 
-  //RELACION CON TABLAS DE ORDENES DE SERVICIO Y ARTICULOS
   articuloId Int           @map("articulo_id")
   articulos  Articulo      @relation(fields: [articuloId], references: [id])
   oservicios OrdenServicio @relation(fields: [ordenServicioId], references: [id])
@@ -123,8 +114,28 @@ model DetalleOrden {
   @@map("detalle_ordenes")
 }
 
+model ActaAceptacion {
+  id                Int      @id @default(autoincrement())
+  numero_cotizacion String   @db.Text
+  fecha_inicio      DateTime @db.Date
+  fecha_final       DateTime @db.Date
+  createdAt         DateTime @default(now())
+  nombre_proyecto   String   @db.Text
+  orden_servicio    String   @map("orden_servicio")
+  oservicios        OrdenServicio @relation(fields: [orden_servicio], references: [numero_orden])
+
+  empresaId Int     @map("empresa_id")
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+
+  proyectoId Int      @map("proyecto_id")
+  proyecto   Proyecto @relation(fields: [proyectoId], references: [id])
+
+  @@map("actas_aceptacion")
+}
+
 enum ESTADO {
   PENDIENTE
+  ENVIADO
   ACEPTADA
   RECHAZADA
   CANCELADA

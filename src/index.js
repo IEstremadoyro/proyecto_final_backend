@@ -6,7 +6,6 @@ config();
 
 const servidor = express();
 
-//Usamos el middleware express.json() para parsear los datos recibidos en formato JSON.
 servidor.use(express.json());
 
 const PUERTO = process.env.PORT
@@ -38,10 +37,8 @@ const errorHandler = (error, req, res, next) => {
 }
 
 
-//Agregamos todas las rutas
 servidor.use(enrutador);
 
-//funcion middleware de manejador de errores
 servidor.use(errorHandler);
 
 try {

@@ -5,10 +5,10 @@ import { crearProyecto, getProyectos } from "../controllers/proyectoController.j
 import { crearArticulo, getArticuloPorNombre, getArticulos, putArticulo } from "../controllers/articuloController.js";
 import { crearCotizacion, getCotizacion } from "../controllers/cotizacionController.js";
 import { crearOservicio, getOservicio } from "../controllers/oservicioController.js";
+import { crearActaAceptacion, getActasAceptacion } from "../controllers/actaAceptacionController.js";
 
 export const enrutador = Router();
 
-//APIS DE EMPRESA
 enrutador
     .route("/empresas")
     .post(asyncHandler(crearEmpresa))
@@ -17,13 +17,11 @@ enrutador
     .route("/empresa/:id")
     .put(asyncHandler(putEmpresa));
 
-//API PROYECTO
 enrutador
     .route("/proyectos")
     .post(asyncHandler(crearProyecto))
     .get(asyncHandler(getProyectos));
 
-//API DE ARTICULOS
 enrutador.route("/articulos")
     .post(asyncHandler(crearArticulo))
     .get(asyncHandler(getArticulos));
@@ -38,10 +36,12 @@ enrutador
     .post(asyncHandler(crearCotizacion))
     .get(asyncHandler(getCotizacion));
 
-//API OSERVICIO
 enrutador
     .route("/oservicios")
     .post(asyncHandler(crearOservicio))
     .get(asyncHandler(getOservicio));
 
-
+enrutador
+    .route("/actas-aceptacion")
+    .post(asyncHandler(crearActaAceptacion))
+    .get(asyncHandler(getActasAceptacion));

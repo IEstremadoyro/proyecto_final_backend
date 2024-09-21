@@ -43,7 +43,7 @@ export const putEmpresa = async (req, res) => {
 
     const empresaEncontrada = await prisma.empresa.findUniqueOrThrow({
         //where:{ id: parseInt(id)}
-        where: { id: +id }, //Tomando en cuenta ECMAScript id = id
+        where: { id: +id }, 
         select: { id: true},
     });
 

@@ -11,13 +11,11 @@ export const crearProyecto = async (req, res) => {
         });
     }
 
-    //Buscamos la empresa
     const empresaEncontrada = await prisma.empresa.findUniqueOrThrow({
         where: { id: value.empresaId },
         select: { id: true},
     });
 
-    //creamos el proyecto
     const proyectoCreado = await prisma.proyecto.create({
         data: {
             nombre: value.nombre,
