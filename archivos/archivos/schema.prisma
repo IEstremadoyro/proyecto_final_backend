@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Empresa {
+  id                 Int      @id @default(autoincrement())
+  nombre             String   @db.Text
+  ruc                String   @db.Text
+  direccion          String   @db.Text
+  telefono           String   @db.Text
+  correo_electronico String   @unique @db.Text
+  habilitado         Boolean  @default(true)
+  createdAt          DateTime @default(now())
+
+  proyectos        Proyecto[] 
+  actas_aceptacion ActaAceptacion[]
+
+  @@map("empresas")
+}
+
+model Proyecto {
+  id           Int       @id @default(autoincrement())
+  nombre       String    @db.Text
+  descripcion  String    @db.Text
+  fecha_inicio DateTime  @db.Date
+  fecha_fin    DateTime? @db.Date
+  createdAt    DateTime  @default(now())
+
+  empresaId        Int              @map("empresa_id")
+  empresas         Empresa          @relation(fields: [empresaId], references: [id])
+  cotizaciones     Cotizacion[]
+  actas_aceptacion ActaAceptacion[]
+
+  @@map("proyectos")
+}
+
+model Cotizacion {
+  id                Int      @id @default(autoincrement())
+  numero_cotizacion String   @unique @db.Text
+  fecha_cotizacion  DateTime @db.Date
+  estado_cotizacion ESTADO   @default(PENDIENTE)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  detalle_cotizaciones DetalleCotizacion[] 
+  proyectoId           Int                 @map("proyecto_id")
+  proyectos            Proyecto            @relation(fields: [proyectoId], references: [id])
+  oservicios           OrdenServicio[] 
+
+  @@map("cotizaciones")
+}
+
+model DetalleCotizacion {
+  id              Int   @id @default(autoincrement())
+  item            Int   @db.Integer
+  cotizacionId    Int   @map("cotizacion_id")
+  cantidad        Int
+  precio_unitario Float
+
+  cotizaciones Cotizacion @relation(fields: [cotizacionId], references: [id])
+
+  articuloId Int      @map("articulo_id")
+  articulos  Articulo @relation(fields: [articuloId], references: [id])
+
+  @@map("detalle_cotizaciones")
+}
+
+model Articulo {
+  id          Int      @id @default(autoincrement())
+  nombre      String   @db.Text
+  descripcion String   @db.Text
+  precio      Float
+  createdAt   DateTime @default(now())
+
+  detalle_cotizaciones DetalleCotizacion[]
+  detalle_ordenes      DetalleOrden[]
+
+  @@map("articulos")
+}
+
+model OrdenServicio {
+  id            Int      @id @default(autoincrement())
+  numero_orden  String   @unique @db.Text
+  fecha_orden   DateTime @db.Date
+  estaddo_orden ESTADO
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  numero_cotizacion String     @map("numero_cotizacion")
+  cotizaciones      Cotizacion @relation(fields: [numero_cotizacion], references: [numero_cotizacion])
+
+  detalle_ordenes  DetalleOrden[] 
+  actas_aceptacion ActaAceptacion[]
+
+  @@map("oservicios")
+}
+
+model DetalleOrden {
+  id              Int   @id @default(autoincrement())
+  item            Int   @db.Integer
+  cantidad        Int
+  precio_unitario Float
+  ordenServicioId Int   @map("oservicio_id")
+
+  articuloId Int           @map("articulo_id")
+  articulos  Articulo      @relation(fields: [articuloId], references: [id])
+  oservicios OrdenServicio @relation(fields: [ordenServicioId], references: [id])
+
+  @@map("detalle_ordenes")
+}
+
+model ActaAceptacion {
+  id                Int      @id @default(autoincrement())
+  numero_cotizacion String   @db.Text
+  fecha_inicio      DateTime @db.Date
+  fecha_final       DateTime @db.Date
+  createdAt         DateTime @default(now())
+  nombre_proyecto   String   @db.Text
+  orden_servicio    String   @map("orden_servicio")
+  oservicios        OrdenServicio @relation(fields: [orden_servicio], references: [numero_orden])
+
+  empresaId Int     @map("empresa_id")
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+
+  proyectoId Int      @map("proyecto_id")
+  proyecto   Proyecto @relation(fields: [proyectoId], references: [id])
+
+  @@map("actas_aceptacion")
+}
+
+enum ESTADO {
+  PENDIENTE
+  ENVIADO
+  ACEPTADA
+  RECHAZADA
+  CANCELADA
+}
