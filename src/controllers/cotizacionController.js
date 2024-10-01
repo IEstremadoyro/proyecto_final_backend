@@ -12,25 +12,22 @@ export const crearCotizacion = async (req, res) => {
     }
 
     try{
-        //Buscamos el proyecto
         const proyectoEncontrado = await prisma.proyecto.findUniqueOrThrow({
             where: { id: value.proyectoId },
             select: { id: true},
         });
         console.log(proyectoEncontrado);
         
-        //buscamos los articulos
         const articuloEncontrado = await prisma.articulo.findMany({
             where: {
               id: {
-                in: value.detalle_cotizaciones.map((detalle) => detalle.articuloId),
+                in: value.detalle_cotizaciones.map((detalle) => detalle.articulo_id),
               },
             },
             select: { id: true },
           });
         //console.log(articuloEncontrado)
     
-        //Realizamos la cotizacion
         const cotizacionCreada = await prisma.cotizacion.create({
         data:{
             numero_cotizacion: value.numero_cotizacion,
@@ -44,14 +41,13 @@ export const crearCotizacion = async (req, res) => {
             data: value.detalle_cotizaciones.map((detalle) => ({
               item: detalle.item,
               cantidad: detalle.cantidad,
-              precio_unitario: detalle.precio, // Asegúrate de que el nombre del campo sea correcto
-              articuloId: detalle.articuloId,
+              precio_unitario: detalle.precio, 
+              articuloId: detalle.articulo_id,
               cotizacionId: cotizacionCreada.id,
             })),
         });
         res.status(201).json({
             message: "La cotización fue creada exitosamente",
-            //content: cotizacionCreada,
             content: detallesCotizacion
         });
     }catch (error) {
@@ -64,9 +60,28 @@ export const crearCotizacion = async (req, res) => {
 }
 
 export const getCotizacion = async (req, res) => {
-  const cotizacionRes = await prisma.proyecto.findMany();
-  return res.json({
-      message: "Listado de cotizaciones",
-      content: cotizacionRes,
-  })
+  try {
+      const cotizacionRes = await prisma.cotizacion.findMany({
+          include: {            
+            proyectos: {
+              select: {
+                  nombre: true,  
+              },
+            },
+              detalle_cotizaciones: true,  
+              
+          },
+      });
+
+      return res.json({
+          message: "Listado de cotizaciones",
+          content: cotizacionRes,
+      });
+  } catch (error) {
+      console.error("Error al obtener cotizaciones:", error);
+      return res.status(500).json({
+          message: "Error al obtener cotizaciones",
+          content: error.message,
+      });
+  }
 };

@@ -3,6 +3,11 @@ import { EmpresaSerializer } from "../serializers/empresaSerializer.js";
 
 export async function crearEmpresa(req, res) {
     const body = req.body;
+    if (body.ruc.length !== 11 && body.ruc.length !== 8){
+        return res.status(400).json({ 
+            message: "El documento debe tener 11 u 8 caracteres segun corresponda",
+        });
+    }
     const resultado = await prisma.empresa.create({
         data: {
             nombre: body.nombre,
@@ -20,6 +25,7 @@ export async function crearEmpresa(req, res) {
 }
 
 export const getEmpresas = async (req, res) => {
+    
     const empresasRes = await prisma.empresa.findMany();
     return res.json({
         message: "Listado de empresas",
@@ -30,7 +36,7 @@ export const getEmpresas = async (req, res) => {
 export const putEmpresa = async (req, res) => {
     const body = req.body;
 
-    const { id }  = req.params; //Nos retorna el id de la empresa
+    const { id }  = req.params;
 
     const { error, value} = EmpresaSerializer.validate(body);
 
@@ -43,7 +49,7 @@ export const putEmpresa = async (req, res) => {
 
     const empresaEncontrada = await prisma.empresa.findUniqueOrThrow({
         //where:{ id: parseInt(id)}
-        where: { id: +id }, //Tomando en cuenta ECMAScript id = id
+        where: { id: +id }, 
         select: { id: true},
     });
 

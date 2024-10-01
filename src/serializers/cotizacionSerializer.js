@@ -10,7 +10,7 @@ export const CotizacionSerializer = Joi.object({
             item: Joi.number().required(),
             cantidad: Joi.number().required(),
             precio: Joi.number().required(),
-            articuloId: Joi.number().required(),
+            articulo_id: Joi.number().required(),
         }).required())
 })
 

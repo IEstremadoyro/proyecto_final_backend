@@ -14,15 +14,22 @@ verificamos la si tenemos node instalado
 nvs use latest
 para la creacion de nuestro poryecto
 npm init
-para instalar expressnom i express joi
+Crear el archivo schema.prisma si no existe:
+npx prisma init
+para instalar expressnom i express join
 npm i express joi
 para instalar nodemon
 npm i --save-dev nodemon @types/express
 para instalar morgan
 npm i morgan
+npm install -g npm
 npx i --save-dev prisma
+npm i --save-dev prisma
+
 para que le de formato a prisma
 npx prisma format
+
+npm i express-async-handler
 antes de hacer la migracion es necesario adicionar en el package.json debajo del main
 "type": "module",
 crea solo la migracion despues de haber creado la base de datos
@@ -30,8 +37,14 @@ npx prisma migrate dev --create-only
 
 ejecuta las migraciones faltantes
 npx prisma migrate deploy
-npm i express-async-handler
 
+npx prisma generate
+npx prisma migrate dev --create-only
+npx prisma migrate deploy
+npm run dev
+
+npx prisma generate
+npx prisma migrate dev
 para ejecutar nuestro servidor
 npm run dev
 
@@ -110,11 +123,12 @@ http://localhost:3000/cotizacion
 post
 http://localhost:3000/oservicios
 {
-    "numero_orden": "ORD-001",
-    "fecha_orden": "2024-09-18",
-    "estaddo_orden": "PENDIENTE",
-    "cotizacion_id": 1
+    "numero_orden": "OS00004",
+    "fecha_orden": "2024-09-20",
+    "estaddo_orden": "PENDIENTE", // Asegúrate de que este valor sea uno de los valores permitidos en tu enum
+    "cotizacion_id": 1 // ID de la cotización existente
 }
+
 get
 http://localhost:3000/oservicios
 
@@ -130,3 +144,14 @@ EMAIL_PASS=tu_contraseña_o_token
 
 
 
+para el frontend para su ejecucion nos ubicamos en la carpeta del frontend y ejecutamos el siguiente  comando:
+http-server
+
+
+npm install react-bootstrap
+npm start
+
+
+
+control de los articulos cuando se agregaron 
+es con respecto a un control de inventarios 
